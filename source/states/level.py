@@ -570,6 +570,7 @@ class Level(tool.State):
                 self.next = c.WIN
             else:
                 self.game_info[c.LEVEL_NUM] += 1
+                self.next = c.LOAD_SCREEN
 
 
     # 在这儿视角跟随
