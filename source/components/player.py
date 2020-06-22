@@ -1,5 +1,3 @@
-__author__ = 'marble_xu'
-
 import os
 import json
 import pygame as pg
@@ -19,11 +17,11 @@ class Player(pg.sprite.Sprite):
         self.setup_speed()
         self.load_images()
         
-        #if c.DEBUG:
-        self.right_frames = self.big_fire_frames[0]
-        self.left_frames = self.big_fire_frames[1]
-        self.big = True
-        self.fire = True
+        if c.DEBUG:
+            self.right_frames = self.big_fire_frames[0]
+            self.left_frames = self.big_fire_frames[1]
+            self.big = True
+            self.fire = True
             
         self.frame_index = 0
         self.state = c.WALK

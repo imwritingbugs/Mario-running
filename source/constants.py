@@ -1,13 +1,9 @@
-
 DEBUG = False
 DEBUG_START_X = 110
 DEBUG_START_y = 538
 
-
 SCREEN_WEIGHT,SCREEN_HEIGHT=800,600
-
 SCREEN_SIZE = (SCREEN_WEIGHT,SCREEN_HEIGHT)
-
 ORIGINAL_CAPTION = "Super Mario Bros"
 
 ## COLORS ##
@@ -47,6 +43,7 @@ SHOP = 'GO SHOPPING'
 LOAD_SCREEN = 'load screen'
 TIME_OUT = 'time out'
 GAME_OVER = 'game over'
+WIN = 'win'
 WANNA_EXIT = 'WANNA EXIT '
 NOT_EXIT = 'I WANT TO STAY '
 LEVEL = 'level'
@@ -82,7 +79,6 @@ LEVEL_NUM = 'level num'
 PLAYER_NAME = 'player name'
 PLAYER_MARIO = 'mario'
 PLAYER_LUIGI = 'luigi'
-PLAYER_TEST = 'TEST'
 MAX_LEVEL='bought level'
 SUCCESSED='succeeded'
 #MAP COMPONENTS

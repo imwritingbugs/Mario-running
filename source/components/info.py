@@ -1,5 +1,3 @@
-__author__ = 'marble_xu'
-
 import pygame as pg
 from .. import setup, tool
 from .. import constants as c
@@ -12,7 +10,7 @@ class Character(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 class Info():
-    def __init__(self, game_info, state,persist):
+    def __init__(self, game_info, state, persist):
 
         self.coin_total = game_info[c.COIN_TOTAL]
         self.total_lives = game_info[c.LIVES]
@@ -85,6 +83,8 @@ class Info():
             self.create_game_over_labels()
         elif self.state == c.TIME_OUT:
             self.create_time_out_labels()
+        elif self.state == c.WIN:
+            self.create_win_labels()
 
     def create_player_image(self):
         self.life_times_image = tool.get_image(setup.GFX['text_images'],
@@ -180,6 +180,15 @@ class Info():
 
         self.state_labels = [game_label, over_label, *self.info_labels]
 
+    def create_win_labels(self):
+        you_label = []
+        win_label = []
+
+        self.create_label(you_label, 'YOU', 280, 300)
+        self.create_label(win_label, 'WIN', 400, 300)
+
+        self.state_labels = [you_label, win_label, *self.info_labels]
+
     def create_time_out_labels(self):
         timeout_label = []
         self.create_label(timeout_label, 'TIME OUT', 290, 310)
@@ -225,10 +234,7 @@ class Info():
             text[index] = Character(self.image_dict[digit])
             text[index].rect = rect
             index -= 1
-    # def testdraw(self, surface):
-    #     self.create_main_menu_labels()
-    #     self.draw_info(surface, self.state_labels)
-    #     #surface.blit(self.player_image, self.player_rect)
+
 
     def draw(self, surface):
         self.draw_info(surface, self.state_labels)

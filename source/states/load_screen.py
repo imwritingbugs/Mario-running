@@ -15,7 +15,7 @@ class LoadScreen(tool.State):
         self.next = self.set_next_state()
 
         info_state = self.set_info_state()
-        self.overhead_info = info.Info(self.game_info, info_state,self.persist)
+        self.overhead_info = info.Info(self.game_info, info_state, self.persist)
 
     def set_next_state(self):
         return c.LEVEL
@@ -45,6 +45,17 @@ class GameOver(LoadScreen):
 
     def set_info_state(self):
         return c.GAME_OVER
+
+class Win(LoadScreen):
+    def __init__(self):
+        LoadScreen.__init__(self)
+        self.time_list = [3000, 3200, 3235]
+
+    def set_next_state(self):
+        return c.MAIN_MENU
+
+    def set_info_state(self):
+        return c.WIN
 
 class ifExit(LoadScreen):
     def __init__(self):

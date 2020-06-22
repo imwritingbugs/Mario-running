@@ -68,7 +68,7 @@ class Level(tool.State):
             self.end_x = self.bg_rect.w
             self.player_x = 110
             self.player_y = c.GROUND_HEIGHT
-#在这里改变代码 因为需要做到每一关都可以买
+
     def change_map(self, index, type):
         self.start_x, self.end_x, self.player_x, self.player_y = self.map_list[index]
         self.viewport.x = self.start_x
@@ -566,9 +566,13 @@ class Level(tool.State):
         else:
             # 每关结束后
             db.update_coin(GD.shopinfo[c.COINID])
-            self.game_info[c.LEVEL_NUM] += 1
-            self.next = c.LOAD_SCREEN
+            if self.game_info[c.LEVEL_NUM] == 4:
+                self.next = c.WIN
+            else:
+                self.game_info[c.LEVEL_NUM] += 1
 
+
+    # 在这儿视角跟随
     def update_viewport(self):
         third = self.viewport.x + self.viewport.w//3
         player_center = self.player.rect.centerx
@@ -577,7 +581,7 @@ class Level(tool.State):
             player_center >= third and
             self.viewport.right < self.end_x):
             self.viewport.x += round(self.player.x_vel)
-        elif self.player.x_vel < 0 and self.viewport.x > self.start_x:
+        elif self.player.x_vel < 0 and player_center <= third and self.viewport.x > self.start_x:
             self.viewport.x += round(self.player.x_vel)
 
     def move_to_dying_group(self, group, sprite):

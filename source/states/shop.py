@@ -162,7 +162,7 @@ class Shop(tool.State):
                 self.cursor.rect.x = 262
                 self.cursor.rect.y = 215
                 self.canUse=0
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 print("buylife")
                 if db.buyThings(c.LIFEPRICE, c.LIFEID):
                     self.game_info[c.COIN_TOTAL] -= c.LIFEPRICE
@@ -192,7 +192,7 @@ class Shop(tool.State):
                 self.cursor.state = c.POWERUP
                 self.cursor.rect.x = 355
                 self.cursor.rect.y = 110
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 print("buyspeed")
                 if db.buyThings(c.SPEEDPRICE, c.SPEEDID):
                     self.game_info[c.COIN_TOTAL] -= c.SPEEDPRICE
@@ -222,7 +222,7 @@ class Shop(tool.State):
                 self.cursor.state = c.WEAPON
                 self.cursor.rect.x = 452
                 self.cursor.rect.y = 215
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 print("buyjump")
                 if db.buyThings(c.JUMPPRICE, c.JUMPID):
                     self.game_info[c.COIN_TOTAL] -= c.JUMPPRICE
@@ -253,7 +253,7 @@ class Shop(tool.State):
                 self.cursor.state=c.LIFE
                 self.cursor.rect.x=170
                 self.cursor.rect.y=100
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 print("buyweapom")
                 if db.buyThings(c.WEAPONPRICE, c.WEAPONID):
                     self.game_info[c.COIN_TOTAL] -= c.WEAPONPRICE
@@ -281,7 +281,7 @@ class Shop(tool.State):
                 self.game_info[c.PLAYER_NAME] = c.PLAYER_LUIGI
                 self.cursor.rect.x = 289
                 self.cursor.rect.y = 315
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 print("buymario")
                 db.buyThings(0, 0)
                 self.canUse = 0
@@ -307,7 +307,7 @@ class Shop(tool.State):
                 self.game_info[c.PLAYER_NAME] = c.PLAYER_MARIO
                 self.cursor.rect.x = 235
                 self.cursor.rect.y = 315
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 print("buyluigi")
                 #如果已经购买，数据为1，此时无法再次购买。如果未购买，数据为0，即可购买
                 if db.buyThings(c.SKINPRICE * ((1- GD.shopinfo[c.SKINID])), c.SKINID):
@@ -338,7 +338,7 @@ class Shop(tool.State):
                 self.cursor.state = c.MAIN_MENU
                 self.cursor.rect.x = 525
                 self.cursor.rect.y =405
-            elif keys[pg.K_b]:
+            elif keys[tool.keybinding['buy']]:
                 self.canUse=0
                 self.maxlevel = GD.shopinfo[c.LEVELID]
                 self.nowlevel = self.persist[c.LEVEL_NUM]
@@ -388,12 +388,6 @@ class Shop(tool.State):
                 self.next=c.MAIN_MENU
                 self.persist[c.STARTUP]=0
                 self.done = True
-                #self.game_info[c.PLAYER
-                # _NAME] = c.PLAYER_MARIO
-        #         self.player_index = 0
-        #         self.game_info[c.PLAYER_NAME] = c.PLAYER_MARIO
-        # if keys[pg.K_RETURN]:
-        #     self.reset_game_info()
-        #     self.done = True
+
 
 
