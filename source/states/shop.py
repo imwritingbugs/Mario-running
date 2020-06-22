@@ -225,7 +225,7 @@ class Shop(tool.State):
             elif keys[pg.K_b]:
                 print("buyjump")
                 if db.buyThings(c.JUMPPRICE, c.JUMPID):
-                    self.game_info[c.COIN_TOTAL] -= c.LIFEPRICE
+                    self.game_info[c.COIN_TOTAL] -= c.JUMPPRICE
                 print(GD.shopinfo)
                 self.canUse = 0
 
@@ -253,6 +253,12 @@ class Shop(tool.State):
                 self.cursor.state=c.LIFE
                 self.cursor.rect.x=170
                 self.cursor.rect.y=100
+            elif keys[pg.K_b]:
+                print("buyweapom")
+                if db.buyThings(c.WEAPONPRICE, c.WEAPONID):
+                    self.game_info[c.COIN_TOTAL] -= c.WEAPONPRICE
+                print(GD.shopinfo)
+                self.canUse = 0
 
         elif self.cursor.state == c.PLAYER_MARIO:
             self.cursor.rect.x = 240
@@ -275,6 +281,11 @@ class Shop(tool.State):
                 self.game_info[c.PLAYER_NAME] = c.PLAYER_LUIGI
                 self.cursor.rect.x = 289
                 self.cursor.rect.y = 315
+            elif keys[pg.K_b]:
+                print("buymario")
+                db.buyThings(0, 0)
+                self.canUse = 0
+
         elif self.cursor.state == c.PLAYER_LUIGI:
             self.cursor.rect.x = 289
             self.cursor.rect.y = 315
@@ -296,6 +307,18 @@ class Shop(tool.State):
                 self.game_info[c.PLAYER_NAME] = c.PLAYER_MARIO
                 self.cursor.rect.x = 235
                 self.cursor.rect.y = 315
+            elif keys[pg.K_b]:
+                print("buyluigi")
+                #如果已经购买，数据为1，此时无法再次购买。如果未购买，数据为0，即可购买
+                if db.buyThings(c.SKINPRICE * ((1- GD.shopinfo[c.SKINID])), c.SKINID):
+                    self.game_info[c.COIN_TOTAL] -= c.SKINPRICE
+                print(GD.shopinfo)
+                self.canUse = 0
+            elif keys[pg.K_RETURN]:
+                self.canUse = 0
+                self.next = c.MAIN_MENU
+                self.persist[c.STARTUP] = 0
+                self.done = True
 
         elif self.cursor.state == c.UNLOCK:
             self.cursor.rect.x = 80
@@ -315,10 +338,19 @@ class Shop(tool.State):
                 self.cursor.state = c.MAIN_MENU
                 self.cursor.rect.x = 525
                 self.cursor.rect.y =405
+            elif keys[pg.K_b]:
+                self.canUse=0
+                self.maxlevel = GD.shopinfo[c.LEVELID]
+                self.nowlevel = self.persist[c.LEVEL_NUM]
+                if self.nowlevel <= self.maxlevel:
+                    db.buyThings(0, 0)
+                else :
+                    if db.buyThings(c.LEVELPRICE * ((self.nowlevel - self.maxlevel)), c.LEVELID):
+                        self.game_info[c.COIN_TOTAL] -= c.LEVELPRICE*((self.nowlevel - self.maxlevel))
+                    print(GD.shopinfo)
+                    self.canUse = 0
             elif keys[pg.K_RETURN]:
                 self.canUse=0
-                #此处需要连接数据库判断金币是否足够
-                #设计买官的价格（比如关卡数*50）
                 if self.persist[c.MAX_LEVEL]==4:
                     self.persist[c.MAX_LEVEL]=4
                 else:

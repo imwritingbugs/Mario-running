@@ -4,6 +4,7 @@ import pygame as pg
 from .. import setup, tool
 from .. import constants as c
 from . import stuff
+from .. components import dataBaseGlobalData as GD
 
 class Powerup(stuff.Stuff):
     def __init__(self, x, y, sheet, image_rect_list, scale):
@@ -172,16 +173,17 @@ class FireBall(Powerup):
         Powerup.__init__(self, x, y, setup.GFX[c.ITEM_SHEET],
                     frame_rect_list, c.SIZE_MULTIPLIER)
         self.type = c.TYPE_FIREBALL
-        self.y_vel = 10
+        self.y_vel = 0
         self.gravity = .9
         self.state = c.FLYING
         self.rect.right = x
+        #这儿调节火球速度
         if facing_right:
             self.direction = c.RIGHT
-            self.x_vel = 12
+            self.x_vel = 12 + 2 *max(1, GD.shopinfo[c.WEAPONID]-4)
         else:
             self.direction = c.LEFT
-            self.x_vel = -12
+            self.x_vel = -12 - 2 *max(1, GD.shopinfo[c.WEAPONID]-4)
 
     def update(self, game_info, level):
         self.current_time = game_info[c.CURRENT_TIME]

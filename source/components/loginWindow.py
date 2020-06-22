@@ -35,15 +35,18 @@ class LoginWindow():
         password=self.entry2.get()
         print(username)
         print(password)
-        if(self.lengthControl(username, password)):
-            info = db.login(username, password)
-            if info == 'notfinduser':
-                self.wantToRegister(username, password)
-            if info == 'wrongpassword':
-                tkinter.messagebox.showerror('错误','密码错误!')
-            if info == 'loginsuccess':
-                tkinter.messagebox.showinfo('成功', '恭喜你成功登录!')
-                self.quit()
+        try:
+            if(self.lengthControl(username, password)):
+                info = db.login(username, password)
+                if info == 'notfinduser':
+                    self.wantToRegister(username, password)
+                if info == 'wrongpassword':
+                    tkinter.messagebox.showerror('错误','密码错误!')
+                if info == 'loginsuccess':
+                    tkinter.messagebox.showinfo('成功', '恭喜你成功登录!')
+                    self.quit()
+        except:
+            tkinter.messagebox.showerror('错误', '连接失败!')
 
     def wantToRegister(self,username, password):
         result = tkinter.messagebox.askokcancel(title='是否注册', message='您尚未注册，是否要注册？')

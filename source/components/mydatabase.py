@@ -2,35 +2,52 @@ import pymysql
 from . import dataBaseGlobalData as GD
 from .. import constants as c
 from tkinter import *
-from tkinter import messagebox
+import tkinter.messagebox as messagebox
 
-db = pymysql.connect('localhost','zhouyan','123456Qaz','mario')
+try:
+    db = pymysql.connect('localhost', 'zhouyan', '123456Qaz', 'mario')
+except:
+    failWindow = Tk()
+    failWindow.title('Connect Failed')
+    width = 200
+    height = 100
+    screenwidth = failWindow.winfo_screenwidth()
+    screenheight = failWindow.winfo_screenheight()
+    alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
+    failWindow.geometry(alignstr)
+    Label(failWindow, text="错误！连接失败", font = '20', width=40, height=20).pack()
+    failWindow.mainloop()
+    sys.exit(1)
 
 def login(username, password):
-    cursor = db.cursor()
-    sql_SELECT1 = """SELECT * FROM userinfo WHERE USER_NAME = %s"""
-    sql_SELECT2 = """SELECT * FROM userinfo WHERE USER_NAME = %s AND PASSWORD = %s"""
+    try:
+        cursor = db.cursor()
+        sql_SELECT1 = """SELECT * FROM userinfo WHERE USER_NAME = %s"""
+        sql_SELECT2 = """SELECT * FROM userinfo WHERE USER_NAME = %s AND PASSWORD = %s"""
 
-    #如果数据库中不存在该用户用户名，则默认为注册
-    cursor.execute(sql_SELECT1,(username))
-    result = cursor.fetchall()
-    if len(result) == 0:
-        return 'notfinduser'
-    else:
-        #如果存在，则根据用户名与密码进行查询
-        cursor.execute(sql_SELECT2, (username, password))
+        #如果数据库中不存在该用户用户名，则默认为注册
+        cursor.execute(sql_SELECT1,(username))
         result = cursor.fetchall()
-        #如果没有查询到，说明密码错误
         if len(result) == 0:
-            return 'wrongpassword'
+            return 'notfinduser'
         else:
-            #查询到后，获取用户信息
-            id = getUserId(username)
-            GD.shopinfo = list(getUserShopinfo(id))
-            GD.userinfo = list(result[0])
-            print(GD.userinfo)
-            print(GD.shopinfo)
-            return 'loginsuccess'
+            #如果存在，则根据用户名与密码进行查询
+            cursor.execute(sql_SELECT2, (username, password))
+            result = cursor.fetchall()
+            #如果没有查询到，说明密码错误
+            if len(result) == 0:
+                return 'wrongpassword'
+            else:
+                #查询到后，获取用户信息
+                id = getUserId(username)
+                GD.shopinfo = list(getUserShopinfo(id))
+                GD.userinfo = list(result[0])
+                print(GD.userinfo)
+                print(GD.shopinfo)
+                return 'loginsuccess'
+    except:
+        return 'connecterror'
+
 
 def register(username, password):
     cursor = db.cursor()
@@ -76,13 +93,19 @@ def updateShopInfo(id):
     GD.shopinfo = list(result[0])
 
 def buyThings(price, goodid):
+
+    if price == 0:
+        messagebox.showinfo('提示', '您已经拥有该商品了哦！')
+        return True
     coins = GD.shopinfo[c.COINID]
     lifes = GD.shopinfo[c.LIFEID]
     speed = GD.shopinfo[c.SPEEDID]
     jump = GD.shopinfo[c.JUMPID]
+    weapon = GD.shopinfo[c.WEAPONID]
+    newlevel = GD.shopinfo[c.LEVELID] + price / c.LEVELPRICE
     if coins < price:
         Tk().wm_withdraw()
-        messagebox.showerror('错误', '好好工作，努力赚钱')
+        messagebox.showerror('错误', '您的金币不够哦！请继续游戏赚取金币吧')
         return False
     else:
         coins -= price
@@ -102,6 +125,19 @@ def buyThings(price, goodid):
             update_jump(jump)
             Tk().wm_withdraw()
             messagebox.showinfo('提示', '你觉得双腿充满了力量，重力无法束缚住你了！')
+        if goodid == c.WEAPONID:
+            weapon += 1
+            update_weapon(weapon)
+            Tk().wm_withdraw()
+            messagebox.showinfo('提示', '有股神秘的力量降临到你身上')
+        if goodid == c.SKINID:
+            update_skin()
+            Tk().wm_withdraw()
+            messagebox.showinfo('提示', '恭喜您解锁了新皮肤！')
+        if goodid == c.LEVELID:
+            update_level(newlevel)
+            Tk().wm_withdraw()
+            messagebox.showinfo('提示', '恭喜您购买了新关卡的跳转权！')
         updateShopInfo(GD.userid)
         return True
 
@@ -127,6 +163,24 @@ def update_jump(jump):
     sql_updateCoin = """UPDATE shopinfo SET Jump = %s WHERE ID = %s"""
     cursor = db.cursor()
     cursor.execute(sql_updateCoin, (jump, GD.userid))
+    db.commit()
+
+def update_weapon(weapon):
+    sql_updateCoin = """UPDATE shopinfo SET Weapon = %s WHERE ID = %s"""
+    cursor = db.cursor()
+    cursor.execute(sql_updateCoin, (weapon, GD.userid))
+    db.commit()
+
+def update_skin():
+    sql_updateCoin = """UPDATE shopinfo SET ifBuySkin = 1 WHERE ID = %s"""
+    cursor = db.cursor()
+    cursor.execute(sql_updateCoin, GD.userid)
+    db.commit()
+
+def update_level(newlevel):
+    sql_updateCoin = """UPDATE shopinfo SET level = %s WHERE ID = %s"""
+    cursor = db.cursor()
+    cursor.execute(sql_updateCoin, (newlevel, GD.userid))
     db.commit()
 
 if __name__ == '__main__':

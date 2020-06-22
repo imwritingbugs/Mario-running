@@ -5,7 +5,7 @@ import json
 import pygame as pg
 from .. import setup, tool
 from .. import constants as c
-#from ..components import powerup
+from ..components import powerup
 from . import mydatabase as db
 from . import dataBaseGlobalData as GD
 
@@ -19,11 +19,11 @@ class Player(pg.sprite.Sprite):
         self.setup_speed()
         self.load_images()
         
-        if c.DEBUG:
-            self.right_frames = self.big_fire_frames[0]
-            self.left_frames = self.big_fire_frames[1]
-            self.big = True
-            self.fire = True
+        #if c.DEBUG:
+        self.right_frames = self.big_fire_frames[0]
+        self.left_frames = self.big_fire_frames[1]
+        self.big = True
+        self.fire = True
             
         self.frame_index = 0
         self.state = c.WALK
@@ -240,7 +240,7 @@ class Player(pg.sprite.Sprite):
         self.check_to_allow_jump(keys)
         self.check_to_allow_fireball(keys)
 
-        if self.frame_index == 0:
+        if  self.frame_index == 0:
             self.frame_index += 1
             self.walking_timer = self.current_time
         elif (self.current_time - self.walking_timer >
@@ -366,15 +366,19 @@ class Player(pg.sprite.Sprite):
         else:
             animation_speed = 130 - (self.x_vel * 13 * -1)
         return animation_speed
-    '''
-        def shoot_fireball(self, powerup_group):
-            if (self.current_time - self.last_fireball_time) > 500:
-                self.allow_fireball = False
+
+    def shoot_fireball(self, powerup_group):
+        if (self.current_time - self.last_fireball_time) > 500/max(1, GD.shopinfo[c.WEAPONID]-4):#canshu1
+            self.allow_fireball = False
+            fireball = 0
+            while fireball < min(GD.shopinfo[c.WEAPONID], 5):
                 powerup_group.add(powerup.FireBall(self.rect.right,
-                                self.rect.y, self.facing_right))
-                self.last_fireball_time = self.current_time
-                self.frame_index = 6
-    '''
+                            self.rect.y - 60 + 30 * fireball, self.facing_right))
+                fireball += 1
+
+            self.last_fireball_time = self.current_time
+            self.frame_index = 6
+
     def flag_pole_sliding(self):
         self.state = c.FLAGPOLE
         self.x_vel = 0
@@ -549,3 +553,4 @@ class Player(pg.sprite.Sprite):
         self.gravity = .5
         self.frame_index = 6
         self.state = c.DEATH_JUMP
+
